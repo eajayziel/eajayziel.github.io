@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Abstract dark navy background with glowing teal light and flowing translucent waves">
+  <defs>
+    <linearGradient id="base" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#061A2B"/>
+      <stop offset="0.55" stop-color="#082035"/>
+      <stop offset="1" stop-color="#0B263D"/>
+    </linearGradient>
+    <radialGradient id="glowA" cx="1450" cy="400" r="760" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#48C4C7" stop-opacity="0.55"/>
+      <stop offset="0.35" stop-color="#2A8FA6" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#061A2B" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowB" cx="260" cy="980" r="620" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#48C4C7" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#061A2B" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="waveStroke" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#48C4C7" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#7EE3E5" stop-opacity="0.7"/>
+      <stop offset="1" stop-color="#48C4C7" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="waveFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#48C4C7" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#48C4C7" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1920" height="1080" fill="url(#base)"/>
+  <rect width="1920" height="1080" fill="url(#glowA)"/>
+  <rect width="1920" height="1080" fill="url(#glowB)"/>
+
+  <!-- delicate circular accents -->
+  <g fill="none" stroke="#48C4C7" stroke-width="1">
+    <circle cx="1450" cy="430" r="170" stroke-opacity="0.22"/>
+    <circle cx="1450" cy="430" r="290" stroke-opacity="0.14"/>
+    <circle cx="1450" cy="430" r="420" stroke-opacity="0.09"/>
+    <circle cx="1450" cy="430" r="570" stroke-opacity="0.06"/>
+    <circle cx="1450" cy="430" r="6" fill="#7EE3E5" stroke="none" fill-opacity="0.8"/>
+  </g>
+
+  <!-- translucent filled waves -->
+  <path d="M0 760 C 320 640, 620 900, 960 780 S 1560 600, 1920 720 L1920 1080 L0 1080 Z" fill="url(#waveFill)"/>
+  <path d="M0 860 C 380 760, 700 980, 1060 880 S 1620 760, 1920 840 L1920 1080 L0 1080 Z" fill="url(#waveFill)" opacity="0.7"/>
+
+  <!-- flowing wave lines -->
+  <g fill="none" stroke="url(#waveStroke)" stroke-width="1.2">
+    <path d="M-40 700 C 300 560, 640 860, 980 720 S 1580 540, 1960 680" opacity="0.9"/>
+    <path d="M-40 730 C 320 600, 660 880, 1000 750 S 1600 580, 1960 710" opacity="0.65"/>
+    <path d="M-40 760 C 340 640, 680 900, 1020 780 S 1620 620, 1960 740" opacity="0.45"/>
+    <path d="M-40 790 C 360 680, 700 920, 1040 810 S 1640 660, 1960 770" opacity="0.3"/>
+    <path d="M-40 820 C 380 720, 720 940, 1060 840 S 1660 700, 1960 800" opacity="0.2"/>
+    <path d="M-40 400 C 280 300, 560 520, 880 420 S 1400 260, 1960 360" opacity="0.28"/>
+    <path d="M-40 430 C 300 340, 580 540, 900 450 S 1420 300, 1960 390" opacity="0.16"/>
+  </g>
+</svg>
