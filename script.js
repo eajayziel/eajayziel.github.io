@@ -88,6 +88,43 @@ const SITE = {
     $$(".hero__orbits").forEach(function (svg) { if (svg.pauseAnimations) svg.pauseAnimations(); });
   }
 
+  /* ---------- Hero: tiles drift slowly around the portrait along the orbit lines ---------- */
+  var tiles = $$(".hero__stage .tile[data-orbit]");
+  if (tiles.length) {
+    /* Same ellipses as the orbit lines in the hero SVG (viewBox 600 x 640) */
+    var ORBITS = {
+      a: { rx: 255, ry: 300, rot: -14, secs: 95 },
+      b: { rx: 235, ry: 285, rot: 26, secs: -120 }
+    };
+    var placeTiles = function (t) {
+      tiles.forEach(function (el) {
+        var o = ORBITS[el.getAttribute("data-orbit")];
+        if (!o) return;
+        var a = (parseFloat(el.getAttribute("data-phase")) || 0) * Math.PI / 180 + (t / o.secs) * Math.PI * 2;
+        var r = o.rot * Math.PI / 180;
+        var lx = o.rx * Math.cos(a), ly = o.ry * Math.sin(a);
+        var x = 300 + lx * Math.cos(r) - ly * Math.sin(r);
+        var y = 340 + lx * Math.sin(r) + ly * Math.cos(r);
+        el.style.left = (x / 6).toFixed(2) + "%";
+        el.style.top = (y / 6.4).toFixed(2) + "%";
+        el.style.zIndex = y < 340 ? "0" : "2";          /* behind the portrait on the far side of the orbit */
+      });
+    };
+    placeTiles(0);
+    if (!reduceMotion) {
+      var stageEl = $(".hero__stage"), running = true, t0 = null;
+      var loop = function (now) {
+        if (t0 === null) t0 = now;
+        if (running) placeTiles((now - t0) / 1000);
+        window.requestAnimationFrame(loop);
+      };
+      window.requestAnimationFrame(loop);
+      if ("IntersectionObserver" in window && stageEl) {
+        new IntersectionObserver(function (e) { running = e[0].isIntersecting; }).observe(stageEl);
+      }
+    }
+  }
+
   /* ---------- Hero parallax (gentle) ---------- */
   var parallax = $("[data-parallax]");
   if (parallax && !reduceMotion) {
