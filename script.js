@@ -125,6 +125,44 @@ const SITE = {
     }
   }
 
+  /* ---------- Hero: micro-glitch activation for the floating tiles ----------
+     Each tile "switches on" once, one after another (timing comes from --t in style.css),
+     then settles. Afterwards a single random tile re-glitches every 10-16 seconds, softer than
+     the first pass. Skipped entirely for visitors who prefer reduced motion. */
+  if (tiles.length && !reduceMotion) {
+    var GLITCH_MS = 240;
+    var glitch = function (tile, delayMs, soft) {
+      tile.style.setProperty("--gd", (delayMs / 1000) + "s");
+      tile.style.setProperty("--gx", soft ? "2px" : "3px");
+      tile.classList.remove("is-glitching");
+      void tile.offsetWidth;                                   /* restart the animation if it was mid-run */
+      tile.classList.add("is-glitching");
+      window.setTimeout(function () {
+        tile.classList.remove("is-glitching");
+        tile.style.removeProperty("--gd");
+        tile.style.removeProperty("--gx");
+      }, delayMs + GLITCH_MS + 80);
+    };
+
+    tiles.forEach(function (tile) {
+      var beat = parseFloat(window.getComputedStyle(tile).getPropertyValue("--t")) || 0;
+      glitch(tile, Math.round(beat * 1000) + 120, false);      /* lands just as the tile fades in */
+    });
+
+    var stage = $(".hero__stage");
+    var scheduleRepeat = function () {
+      window.setTimeout(function () {
+        var r = stage ? stage.getBoundingClientRect() : null;
+        var inView = r && r.bottom > 0 && r.top < window.innerHeight;
+        if (!document.hidden && inView) {
+          glitch(tiles[Math.floor(Math.random() * tiles.length)], 0, true);
+        }
+        scheduleRepeat();
+      }, 10000 + Math.random() * 6000);
+    };
+    window.setTimeout(scheduleRepeat, 4000);                   /* first repeat comes well after the intro sequence */
+  }
+
   /* ---------- Hero parallax (gentle) ---------- */
   var parallax = $("[data-parallax]");
   if (parallax && !reduceMotion) {

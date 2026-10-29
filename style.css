@@ -425,6 +425,77 @@ h1, h2, h3 {
 .tile svg { width: 46%; height: 46%; }
 @keyframes tile-in { from { opacity: 0; scale: 0.82; } }
 
+/* ----- Micro-glitch activation -----
+   Each tile fades in on its own beat (--t), script.js then adds .is-glitching for ~240ms:
+   the icon splits into cyan + blue ghosts, flickers once, and snaps back to its exact position.
+   Only transform / opacity / filter on the icon and two border ghosts are animated, so nothing
+   moves in the layout and the tile's own position (set by script.js) is never touched. */
+.tile:nth-of-type(1) { --t: 0.7s; }
+.tile:nth-of-type(2) { --t: 1s; }
+.tile:nth-of-type(3) { --t: 1.3s; }
+.tile:nth-of-type(4) { --t: 1.6s; }
+.tile {
+  --gx: 3px;                                  /* ghost offset; kept tiny on purpose */
+  animation-duration: 0.45s;
+  box-shadow:
+    0 14px 30px -14px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 0 22px -8px rgba(72, 196, 199, 0.4);    /* resting cyan glow */
+}
+.tile svg {
+  filter: drop-shadow(0 0 3px rgba(72, 196, 199, 0.45)) drop-shadow(0 0 0 rgba(47, 127, 184, 0));
+}
+.tile::before,
+.tile::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  border: 1px solid;
+  opacity: 0;
+  pointer-events: none;
+}
+.tile::before { border-color: rgba(72, 196, 199, 0.85); }
+.tile::after  { border-color: rgba(47, 127, 184, 0.9); }
+
+.tile.is-glitching svg {
+  animation: tile-glitch-icon 0.24s cubic-bezier(0.2, 0.8, 0.2, 1) var(--gd, 0s) both;
+  will-change: transform, filter;
+}
+.tile.is-glitching::before { animation: tile-ghost-a 0.24s cubic-bezier(0.2, 0.8, 0.2, 1) var(--gd, 0s) both; }
+.tile.is-glitching::after  { animation: tile-ghost-b 0.24s cubic-bezier(0.2, 0.8, 0.2, 1) var(--gd, 0s) both; }
+
+@keyframes tile-glitch-icon {
+  0%   { transform: none; opacity: 1;
+         filter: drop-shadow(0 0 3px rgba(72, 196, 199, 0.45)) drop-shadow(0 0 0 rgba(47, 127, 184, 0)); }
+  14%  { transform: translateX(calc(var(--gx) * -0.6)); opacity: 1;
+         filter: drop-shadow(calc(var(--gx) * -1) 0 0 rgba(72, 196, 199, 0.9)) drop-shadow(var(--gx) 0 0 rgba(47, 127, 184, 0.9)); }
+  28%  { transform: translateX(calc(var(--gx) * 0.6)); opacity: 0.55;
+         filter: drop-shadow(var(--gx) 0 0 rgba(72, 196, 199, 0.8)) drop-shadow(calc(var(--gx) * -1) 0 0 rgba(47, 127, 184, 0.8)); }
+  44%  { transform: translateX(calc(var(--gx) * -0.3)); opacity: 1;
+         filter: drop-shadow(calc(var(--gx) * -0.7) 0 0 rgba(72, 196, 199, 0.75)) drop-shadow(calc(var(--gx) * 0.7) 0 0 rgba(47, 127, 184, 0.75)); }
+  60%  { transform: translateX(calc(var(--gx) * 0.2)); opacity: 0.75;
+         filter: drop-shadow(calc(var(--gx) * 0.4) 0 0 rgba(72, 196, 199, 0.55)) drop-shadow(calc(var(--gx) * -0.4) 0 0 rgba(47, 127, 184, 0.55)); }
+  80%  { transform: none; opacity: 1;
+         filter: drop-shadow(calc(var(--gx) * -0.2) 0 1px rgba(72, 196, 199, 0.55)) drop-shadow(0 0 0 rgba(47, 127, 184, 0)); }
+  100% { transform: none; opacity: 1;
+         filter: drop-shadow(0 0 3px rgba(72, 196, 199, 0.45)) drop-shadow(0 0 0 rgba(47, 127, 184, 0)); }
+}
+@keyframes tile-ghost-a {
+  0%   { opacity: 0; transform: none; }
+  14%  { opacity: 0.8; transform: translateX(calc(var(--gx) * -1)); }
+  34%  { opacity: 0.25; transform: translateX(calc(var(--gx) * -0.7)); }
+  58%  { opacity: 0.5; transform: translateX(calc(var(--gx) * -0.4)); }
+  100% { opacity: 0; transform: none; }
+}
+@keyframes tile-ghost-b {
+  0%   { opacity: 0; transform: none; }
+  14%  { opacity: 0.8; transform: translateX(var(--gx)); }
+  34%  { opacity: 0.25; transform: translateX(calc(var(--gx) * 0.7)); }
+  58%  { opacity: 0.5; transform: translateX(calc(var(--gx) * 0.4)); }
+  100% { opacity: 0; transform: none; }
+}
+
 /* Handwritten tagline */
 .hero__script {
   position: absolute;
@@ -451,8 +522,8 @@ h1, h2, h3 {
   color: var(--white);
   text-shadow: 0 0 0.12em rgba(255, 255, 255, 0.5), 0 0 0.55em rgba(130, 200, 255, 0.28);
   /* a soft, slightly slanted edge sweeps left to right, like a pen */
-  -webkit-mask-image: linear-gradient(100deg, #000 0, #000 44%, transparent 56%);
-  mask-image: linear-gradient(100deg, #000 0, #000 44%, transparent 56%);
+  -webkit-mask-image: linear-gradient(100deg, #000 0, #000 38%, transparent 58%);
+  mask-image: linear-gradient(100deg, #000 0, #000 38%, transparent 58%);
   -webkit-mask-size: 280% 100%;
   mask-size: 280% 100%;
   -webkit-mask-repeat: no-repeat;
@@ -462,12 +533,23 @@ h1, h2, h3 {
   animation: write var(--w-dur, 1s) cubic-bezier(0.45, 0.05, 0.4, 1) var(--w-d, 1s) both;
 }
 .script__word--neon {
+  /* after it is written, "Forward" breathes very slowly, like a lit sign */
+  animation:
+    write var(--w-dur, 1s) cubic-bezier(0.45, 0.05, 0.4, 1) var(--w-d, 1s) both,
+    neon-breathe 7s ease-in-out calc(var(--w-d, 1s) + var(--w-dur, 1s) + 0.4s) infinite alternate;
   color: var(--neon);
   text-shadow: 0 0 0.1em rgba(170, 250, 252, 0.85), 0 0 0.4em rgba(72, 196, 199, 0.75), 0 0 0.9em rgba(72, 196, 199, 0.4);
 }
 @keyframes write {
-  from { -webkit-mask-position: 100% 0; mask-position: 100% 0; }
-  to   { -webkit-mask-position: 0 0;    mask-position: 0 0; }
+  /* the pen edge sweeps across while each word eases in from a hair left/below and sharpens */
+  from { -webkit-mask-position: 100% 0; mask-position: 100% 0; opacity: 0; filter: blur(1.5px); transform: translate(-0.03em, 0.04em); }
+  20%  { opacity: 1; }
+  75%  { filter: blur(0); }
+  to   { -webkit-mask-position: 0 0; mask-position: 0 0; opacity: 1; filter: blur(0); transform: none; }
+}
+@keyframes neon-breathe {
+  from { text-shadow: 0 0 0.1em rgba(170, 250, 252, 0.85), 0 0 0.4em rgba(72, 196, 199, 0.75), 0 0 0.9em rgba(72, 196, 199, 0.4); }
+  to   { text-shadow: 0 0 0.1em rgba(170, 250, 252, 0.6), 0 0 0.4em rgba(72, 196, 199, 0.55), 0 0 0.9em rgba(72, 196, 199, 0.28); }
 }
 
 .script__arrow {
@@ -629,6 +711,12 @@ h1, h2, h3 {
 .tool__level { font-size: 0.78rem; color: var(--text-soft); }
 
 @keyframes marquee { to { transform: translateX(-50%); } }
+
+/* Scrolling strip = icons only. Categories, names and levels appear in "Show all tools". */
+.marquee:not(.is-static) .marquee__label,
+.marquee:not(.is-static) .tool__level { display: none; }
+.marquee:not(.is-static) .tool { padding-inline: 1.7rem; }
+.marquee:not(.is-static) .tool__icon { height: 34px; }
 
 .tools__toggle {
   margin-top: 1.1rem;
@@ -1041,7 +1129,37 @@ h1, h2, h3 {
 }
 .hub.has-photo .hub__fallback { display: none; }
 
-.glance__lines { grid-column: 2; grid-row: 1 / 4; width: 100%; height: 100%; overflow: visible; }
+/* Photo only: no circle, ring or backdrop. The portrait sits on the card with a soft teal glow.
+   (Before the photo loads, the circular fallback above is still used.) */
+.hub.has-photo {
+  width: 100%;
+  max-width: 190px;
+  aspect-ratio: auto;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  z-index: 1;
+}
+.hub.has-photo::before { display: none; }
+.hub.has-photo img {
+  position: static;
+  inset: auto;
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0;
+  background: none;
+  object-fit: contain;
+  filter: drop-shadow(0 0 8px rgba(72, 196, 199, 0.5)) drop-shadow(0 0 22px rgba(72, 196, 199, 0.28));
+  animation: photo-glow 6s ease-in-out infinite alternate;
+}
+@keyframes photo-glow {
+  from { filter: drop-shadow(0 0 7px rgba(72, 196, 199, 0.42)) drop-shadow(0 0 20px rgba(72, 196, 199, 0.22)); }
+  to   { filter: drop-shadow(0 0 11px rgba(72, 196, 199, 0.65)) drop-shadow(0 0 28px rgba(72, 196, 199, 0.36)); }
+}
+
+/* starts 8px under the photo so the lines emerge right from its edge */
+.glance__lines { grid-column: 2; grid-row: 1 / 4; width: calc(100% + 8px); margin-left: -8px; height: 100%; overflow: visible; }
 .glance__lines path {
   fill: none;
   stroke: var(--teal-ink);
@@ -1170,14 +1288,25 @@ a.contact__item:hover .go { transform: translate(3px, -3px); color: var(--teal);
 .contact__item.is-placeholder:hover { padding-left: 0.25rem; background: none; }
 
 /* ---------- Footer ---------- */
-.site-footer { background: var(--navy); color: var(--on-dark-soft); border-top: 1px solid var(--line-dark); padding-block: 3rem 2.5rem; font-size: 0.95rem; }
-.footer__grid { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2rem; align-items: flex-start; }
-.footer__brand .wordmark { font-size: 1.6rem; }
+.site-footer { background: var(--navy); color: var(--on-dark-soft); border-top: 1px solid var(--line-dark); padding-block: 3.5rem 2rem; font-size: 0.95rem; }
+
+/* Top row: brand block on the left, navigation on the right, both on the same margins */
+.footer__grid { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 2rem; row-gap: 1.75rem; align-items: start; }
+.footer__brand .wordmark { font-size: 1.6rem; line-height: 1.2; }
 .footer__brand p { margin-top: 0.7rem; max-width: 36rem; font-size: 0.88rem; }
-.footer__nav { display: flex; flex-wrap: wrap; gap: 0.5rem 1.75rem; font-size: 0.88rem; }
-.footer__nav a { text-decoration: none; color: var(--on-dark); padding-block: 0.25rem; }
+.footer__roles { list-style: none; display: flex; flex-wrap: wrap; gap: 0.25rem 0; margin: 0.8rem 0 0; padding: 0; font-size: 0.88rem; }
+.footer__roles li + li::before { content: "·"; margin-inline: 0.7rem; color: var(--teal); }
+
+.footer__nav { display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 0.5rem 2rem; min-height: 1.92rem; font-size: 0.92rem; }
+.footer__nav a { text-decoration: none; color: var(--on-dark); padding-block: 0.25rem; transition: color 0.3s var(--ease); }
 .footer__nav a:hover { color: var(--teal); }
-.footer__legal { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--line-dark); font-size: 0.82rem; }
+
+/* Bottom row: copyright on the left, back-to-top on the right, under one full-width rule */
+.footer__bottom { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.75rem 2rem; margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--line-dark); font-size: 0.82rem; }
+.footer__bottom .footer__legal { margin: 0; padding: 0; border: 0; }
+.footer__top { color: var(--on-dark); text-decoration: none; transition: color 0.3s var(--ease); }
+.footer__top:hover { color: var(--teal); }
+.footer__legal { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--line-dark); font-size: 0.82rem; }   /* kept for project pages that still use the older footer */
 
 /* ---------- Project detail pages ---------- */
 .page-hero {
@@ -1318,6 +1447,10 @@ a.contact__item:hover .go { transform: translate(3px, -3px); color: var(--teal);
   body { font-size: 1rem; }
   .projects, .steps { grid-template-columns: 1fr; }
   .hero__actions .btn { flex: 1 1 100%; }
+  .footer__grid { grid-template-columns: 1fr; }
+  .footer__nav { justify-content: flex-start; gap: 0.5rem 1.6rem; }
+  .footer__roles { gap: 0.25rem 1.25rem; }
+  .footer__roles li + li::before { display: none; }
   .play-badge { width: 68px; height: 68px; }
   .marquee__track { animation-duration: 55s; }
 
@@ -1331,6 +1464,7 @@ a.contact__item:hover .go { transform: translate(3px, -3px); color: var(--teal);
   /* Glance: hub on top, lines hidden, stats stacked */
   .glance__map { grid-template-columns: 1fr; grid-template-rows: none; gap: 0.8rem; }
   .hub { grid-column: 1; grid-row: auto; margin: 1.2rem auto 1.4rem; }
+  .hub.has-photo { width: min(100%, 180px); }
   .glance__lines { display: none; }
   .stat { grid-column: 1; }
 }
@@ -1352,4 +1486,5 @@ a.contact__item:hover .go { transform: translate(3px, -3px); color: var(--teal);
   .hero__bg { transform: none !important; }
   .script__word { -webkit-mask-image: none; mask-image: none; }
   .tools__toggle { display: none; }
+  .hub.has-photo img { animation: none; }
 }
