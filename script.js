@@ -8,8 +8,8 @@
    Leave a value as "" and the site shows a clearly labelled placeholder.
    -------------------------------------------------------------------------- */
 const SITE = {
-  email: "",      // e.g. "eajayziel@gmail.com"
-  linkedin: "",   // e.g. "linkedin.com/in/jayziel-lagumbay"
+  email: "",      // e.g. "name@example.com"
+  linkedin: "",   // e.g. "https://www.linkedin.com/in/your-profile"
   cv: "",         // e.g. "assets/cv.pdf" (path relative to the site root) or a full https:// URL
   videoUrl: ""    // YouTube/Vimeo link, or a path such as "assets/videos/intro.mp4"
 };
@@ -83,24 +83,9 @@ const SITE = {
     if (steps) steps.classList.add("is-visible");
   }
 
-  /* ---------- Hero background video (loops silently; image is the fallback) ---------- */
-  var heroVideo = $(".hero__video");
-  if (heroVideo) {
-    if (reduceMotion) {
-      heroVideo.pause();
-      heroVideo.removeAttribute("autoplay");
-    } else {
-      heroVideo.muted = true;
-      heroVideo.addEventListener("playing", function () { heroVideo.classList.add("is-playing"); });
-      var tryPlay = function () { var p = heroVideo.play(); if (p && p.catch) p.catch(function () {}); };
-      tryPlay();
-      /* Save battery and data: pause when the hero is off screen */
-      if ("IntersectionObserver" in window) {
-        new IntersectionObserver(function (entries) {
-          entries.forEach(function (e) { if (e.isIntersecting) tryPlay(); else heroVideo.pause(); });
-        }, { threshold: 0.05 }).observe(heroVideo);
-      }
-    }
+  /* ---------- Hero: freeze the orbit dots for visitors who prefer reduced motion ---------- */
+  if (reduceMotion) {
+    $$(".hero__orbits").forEach(function (svg) { if (svg.pauseAnimations) svg.pauseAnimations(); });
   }
 
   /* ---------- Hero parallax (gentle) ---------- */
@@ -215,17 +200,65 @@ const SITE = {
     else img.addEventListener("load", ok);
   });
 
-  /* ---------- Tool icons: fall back to the tool name if an SVG is missing ---------- */
+  /* ---------- Tool icons ----------
+     If an icon does not load from its expected path, look for it in the neighbouring
+     folders and common filename spellings (GitHub Pages is case-sensitive), then fall
+     back to the tool's name. The browser console says exactly which file was missing. */
   function iconFallback(img) {
     img.hidden = true;
     var name = img.parentNode && img.parentNode.querySelector(".tool__name");
     if (name) name.hidden = false;
   }
+  function iconVariants(img) {
+    var u;
+    try { u = new URL(img.getAttribute("data-src0"), document.baseURI); } catch (e) { return []; }
+    var parts = u.pathname.split("/");
+    var stem = parts.pop().replace(/\.svg$/i, "");
+    var names = [
+      stem,
+      stem.replace(/(^|-)([a-z])/g, function (m, a, b) { return a + b.toUpperCase(); }),
+      stem.replace(/-/g, "_")
+    ];
+    var out = [];
+    for (var k = 0; k < 4 && parts.length - k > 0; k++) {
+      var dir = parts.slice(0, parts.length - k).join("/") + "/";
+      names.forEach(function (n) {
+        var url = u.origin + dir + n + ".svg";
+        if (url !== u.href && out.indexOf(url) === -1) out.push(url);
+      });
+    }
+    return out;
+  }
+  function iconRetry(img) {
+    if (!img.getAttribute("data-src0")) img.setAttribute("data-src0", img.getAttribute("src"));
+    if (!img._variants) img._variants = iconVariants(img);
+    if (img._variants.length) { img.src = img._variants.shift(); return; }
+    if (!img._warned) {
+      img._warned = true;
+      console.warn("[portfolio] Tool icon not found: " + img.getAttribute("data-src0") +
+        " (also looked in the neighbouring folders). Check the file name and folder.");
+    }
+    iconFallback(img);
+  }
   document.addEventListener("error", function (e) {
-    if (e.target && e.target.classList && e.target.classList.contains("tool__icon")) iconFallback(e.target);
+    if (e.target && e.target.classList && e.target.classList.contains("tool__icon")) iconRetry(e.target);
   }, true);
+  document.addEventListener("load", function (e) {
+    var img = e.target;
+    if (img && img.classList && img.classList.contains("tool__icon") && img.getAttribute("data-src0") &&
+        img.getAttribute("src") !== img.getAttribute("data-src0")) {
+      console.info("[portfolio] Tool icon found at " + img.src + " instead of " + img.getAttribute("data-src0") +
+        ". Move or rename it to the expected path to remove this notice.");
+    }
+  }, true);
+  /* Icons that already finished loading before this script ran. Do not use naturalWidth here:
+     SVG files without width/height attributes report 0 in some browsers even when they loaded fine. */
   $$(".tool__icon").forEach(function (img) {
-    if (img.complete && img.naturalWidth === 0) iconFallback(img);
+    if (img.complete && img.naturalWidth === 0) {
+      var probe = new Image();                     /* load or error tells us the truth, size does not */
+      probe.onerror = function () { iconRetry(img); };
+      probe.src = img.currentSrc || img.src;
+    }
   });
 
   /* ---------- Count-up for the experience figures ---------- */

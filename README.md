@@ -11,7 +11,7 @@ executive-assistant-portfolio/
 ├── script.js                       Interactions + your editable site settings
 ├── .nojekyll                       Tells GitHub Pages to serve files as is
 ├── assets/
-│   ├── images/hero-bg.svg          Hero background (replaceable)
+│   ├── images/hero-bg.svg          Used by the Introduction video thumbnail and project page headers
 │   ├── images/portrait-hero.png    Hero photo (included)
 │   ├── images/portrait-circle.png  About-circle photo (included)
 │   ├── icons/favicon.svg
@@ -50,7 +50,7 @@ While a setting is empty, the site shows a clearly labelled placeholder instead 
 
 Two photos are used, both already optimized and included in this update:
 
-- `assets/images/portrait-hero.png`: the white-outfit photo in the hero.
+- `assets/images/portrait-hero.png`: the white-outfit photo in the hero. It fades out at the bottom, so a photo cropped at the hips or knees works best.
 - `assets/images/portrait-circle.png`: the blue-blazer photo in the "Experience at a Glance" circle.
 
 To swap either one later, upload a new transparent PNG with the same file name. Until a file exists, a placeholder is shown.
@@ -61,6 +61,8 @@ All 23 monochrome (navy) icons are included in **`assets/icons/tools/`**. They w
 
 Sources: Simple Icons (CC0) for most brands, plus Font Awesome (CC BY 4.0), Devicons and react-icons for the rest. The Microsoft Word, Excel and PowerPoint icons are generic file-type icons (letters W, X, P), the PDF icon is a generic PDF file, and the **GoHighLevel** icon is a simple placeholder glyph I drew, because no official mark was available. All brand names and logos belong to their owners.
 
+**Icons not showing?** The page looks for each file at exactly `assets/icons/tools/<name>.svg`, all lowercase with hyphens (GitHub Pages is case-sensitive). The 23 names are: `microsoft-word`, `google-docs`, `microsoft-excel`, `microsoft-powerpoint`, `google-sheets`, `google-slides`, `google-drive`, `gmail`, `google-meet`, `zoom`, `slack`, `calendly`, `google-calendar`, `notion`, `chatgpt`, `claude`, `gohighlevel`, `make`, `canva`, `adobe-photoshop`, `google-search`, `google-forms`, `pdf`. To check one, open `https://YOUR-USERNAME.github.io/assets/icons/tools/slack.svg` in a browser; if it shows a 404, the file is in the wrong folder or has a different name. The site also looks in the neighbouring folders and a few common spellings, and prints a message in the browser console (right-click, Inspect, Console) naming any icon it could not find.
+
 Icons display at 30px tall in the scrolling strip and 22px on the project cards. The "Show all tools" button lists every tool by category with its name, so nothing is cut off. Visitors who prefer reduced motion see this view automatically.
 
 ## "Watch demo" buttons
@@ -69,7 +71,7 @@ Until your demo videos exist, the buttons open each project page. When a video i
 
 ## Other things to replace
 
-- **Hero background video (looping):** save your video as `assets/videos/hero-bg.mp4` (H.264). Optionally add a `hero-bg.webm` version too; browsers pick the first one they can play. It plays muted and loops automatically. Tips: keep it under about 8 MB, 10 to 20 seconds, 1920×1080 or smaller, no audio track, and a dark or low-contrast clip so the white headline stays readable. The old background image shows while the video loads, if the file is missing, and for visitors who have reduced motion turned on. The video pauses when scrolled out of view.
+- **Hero:** the hero is now a designed scene (portrait, orbit lines, floating tiles and a handwritten "Work that Moves Forward" that writes itself in, then draws its arrow). It no longer uses a background video. The handwriting font is set by `--font-script` at the top of `style.css`; change it there, and add the font to the Google Fonts link in `index.html`. The timing of each word is the `--w-d` (delay) and `--w-dur` (duration) on each `script__word` in `index.html`. Visitors who prefer reduced motion see the finished tagline straight away.
 - **Project downloads:** each project page lists deliverables marked "Link to be added". When your files are ready, put them in `assets/downloads/` and replace the status label with a link such as `<a href="../assets/downloads/your-file.xlsx">`.
 
 ## Preview locally
@@ -108,4 +110,4 @@ Every link and asset uses a relative path (for example `assets/images/hero-bg.sv
 
 ## Fonts
 
-Fraunces and Instrument Sans are loaded from Google Fonts (open-source, free). If offline, the site falls back to Georgia and system sans-serif fonts.
+Fraunces, Instrument Sans and Mr Dafoe (the handwritten tagline) are loaded from Google Fonts (open-source, free). If offline, the site falls back to Georgia and system sans-serif fonts.
