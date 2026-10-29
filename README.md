@@ -55,20 +55,13 @@ Two photos are used, both already optimized and included in this update:
 
 To swap either one later, upload a new transparent PNG with the same file name. Until a file exists, a placeholder is shown.
 
-## Tool icons (your monochrome SVGs)
+## Tool icons
 
-Save each icon in **`assets/icons/tools/`** using exactly these file names. Any icon that is missing falls back to the tool's name as text, so you can add them gradually.
+All 23 monochrome (navy) icons are included in **`assets/icons/tools/`**. They work as they are. To use your own versions, upload an SVG with the same file name and it replaces mine. If an icon file is ever missing, the tool's name shows instead.
 
-```
-microsoft-word.svg   google-docs.svg      microsoft-excel.svg    microsoft-powerpoint.svg
-google-sheets.svg    google-slides.svg    google-drive.svg       gmail.svg
-google-meet.svg      zoom.svg             slack.svg              calendly.svg
-google-calendar.svg  notion.svg           chatgpt.svg            claude.svg
-gohighlevel.svg      make.svg             canva.svg              adobe-photoshop.svg
-google-search.svg    google-forms.svg     pdf.svg
-```
+Sources: Simple Icons (CC0) for most brands, plus Font Awesome (CC BY 4.0), Devicons and react-icons for the rest. The Microsoft Word, Excel and PowerPoint icons are generic file-type icons (letters W, X, P), the PDF icon is a generic PDF file, and the **GoHighLevel** icon is a simple placeholder glyph I drew, because no official mark was available. All brand names and logos belong to their owners.
 
-Icons display at 30px tall in the scrolling strip and 22px tall on the project cards. Use a viewBox and no fixed width so they scale cleanly.
+Icons display at 30px tall in the scrolling strip and 22px on the project cards. The "Show all tools" button lists every tool by category with its name, so nothing is cut off. Visitors who prefer reduced motion see this view automatically.
 
 ## "Watch demo" buttons
 

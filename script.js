@@ -8,9 +8,9 @@
    Leave a value as "" and the site shows a clearly labelled placeholder.
    -------------------------------------------------------------------------- */
 const SITE = {
-  email: "",      // e.g. "eajayziel@gmail.com"
-  linkedin: "",   // e.g. "linkedin.com/in/jayziel-lagumbay"
-  cv: "",         // e.g. "https://drive.google.com/file/d/1EWen1QkFMZ8Lrws0k-_vy1U9bxhjAwCp/view?usp=sharing" (path relative to the site root) or a full https:// URL
+  email: "",      // e.g. "name@example.com"
+  linkedin: "",   // e.g. "https://www.linkedin.com/in/your-profile"
+  cv: "",         // e.g. "assets/cv.pdf" (path relative to the site root) or a full https:// URL
   videoUrl: ""    // YouTube/Vimeo link, or a path such as "assets/videos/intro.mp4"
 };
 
@@ -123,12 +123,38 @@ const SITE = {
   var marquee = $("#marquee");
   var track = $("#marquee-track");
   var set = $("#marquee-set");
-  if (marquee && track && set && !reduceMotion) {
+  $$(".tool__icon").forEach(function (img) { if (img.alt) img.title = img.alt; });
+  var toolsToggle = $("#tools-toggle");
+  if (marquee && track && set) {
     var clone = set.cloneNode(true);
     clone.removeAttribute("id");
     clone.setAttribute("aria-hidden", "true");
     track.appendChild(clone);
-    marquee.classList.add("is-running");
+    if (reduceMotion) {
+      marquee.classList.add("is-static");
+      if (toolsToggle) toolsToggle.hidden = true;
+      $$(".tool", marquee).forEach(function (t) {
+        var ic = t.querySelector(".tool__icon"), nm = t.querySelector(".tool__name");
+        if (ic && nm && !ic.hidden) nm.hidden = false;
+      });
+    } else {
+      marquee.classList.add("is-running");
+    }
+    if (toolsToggle) {
+      toolsToggle.addEventListener("click", function () {
+        var showAll = !marquee.classList.contains("is-static");
+        marquee.classList.toggle("is-static", showAll);
+        marquee.classList.toggle("is-running", !showAll);
+        toolsToggle.setAttribute("aria-pressed", String(showAll));
+        /* In the full view, show each tool's name beside its icon (only where the icon loaded) */
+        $$(".tool", marquee).forEach(function (t) {
+          var ic = t.querySelector(".tool__icon"), nm = t.querySelector(".tool__name");
+          if (ic && nm && !ic.hidden) nm.hidden = !showAll;
+        });
+        toolsToggle.setAttribute("aria-pressed", String(showAll));
+        toolsToggle.textContent = showAll ? "Scroll tools" : "Show all tools";
+      });
+    }
   }
 
   /* ---------- Active nav link while scrolling (home page only) ---------- */
