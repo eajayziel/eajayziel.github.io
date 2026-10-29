@@ -12,7 +12,9 @@ executive-assistant-portfolio/
 ├── .nojekyll                       Tells GitHub Pages to serve files as is
 ├── assets/
 │   ├── images/hero-bg.svg          Hero background (replaceable)
+│   ├── images/portrait.png         Your transparent portrait (add this)
 │   ├── icons/favicon.svg
+│   ├── icons/tools/                Your monochrome tool icons (add these)
 │   └── videos/                     Put your intro video here if self-hosting
 ├── projects/
 │   ├── executive-command-center.html
@@ -43,10 +45,32 @@ const SITE = {
 
 While a setting is empty, the site shows a clearly labelled placeholder instead of a broken link. The "View My CV" buttons scroll to the Contact section until `cv` is set.
 
+## Portrait (transparent PNG)
+
+Save your cut-out photo (no background) as **`assets/images/portrait.png`**. That is all you need to do. It shows up automatically in two places: the hero, and the circle in "Experience at a Glance". Until the file exists, a placeholder is shown. A tall image (about 4:5) works best.
+
+## Tool icons (your monochrome SVGs)
+
+Save each icon in **`assets/icons/tools/`** using exactly these file names. Any icon that is missing falls back to the tool's name as text, so you can add them gradually.
+
+```
+microsoft-word.svg   google-docs.svg      microsoft-excel.svg    microsoft-powerpoint.svg
+google-sheets.svg    google-slides.svg    google-drive.svg       gmail.svg
+google-meet.svg      zoom.svg             slack.svg              calendly.svg
+google-calendar.svg  notion.svg           chatgpt.svg            claude.svg
+gohighlevel.svg      make.svg             canva.svg              adobe-photoshop.svg
+google-search.svg    google-forms.svg     pdf.svg
+```
+
+Icons display at 30px tall in the scrolling strip and 22px tall on the project cards. Use a viewBox and no fixed width so they scale cleanly.
+
+## "Watch demo" buttons
+
+Until your demo videos exist, the buttons open each project page. When a video is ready, tell me (or point the button's `href` at the video) and add its length to the label, for example "Watch 38 sec demo".
+
 ## Other things to replace
 
-- **Portrait:** save your photo as `assets/images/portrait.jpg`. In `index.html`, find the comment inside the `.portrait` figure, uncomment the `<img>` line and delete the placeholder `<div>`.
-- **Hero background:** to use your own HD image, save it in `assets/images/` and change the `url(...)` in the `.hero__bg` rule in `style.css`.
+- **Hero background video (looping):** save your video as `assets/videos/hero-bg.mp4` (H.264). Optionally add a `hero-bg.webm` version too; browsers pick the first one they can play. It plays muted and loops automatically. Tips: keep it under about 8 MB, 10 to 20 seconds, 1920×1080 or smaller, no audio track, and a dark or low-contrast clip so the white headline stays readable. The old background image shows while the video loads, if the file is missing, and for visitors who have reduced motion turned on. The video pauses when scrolled out of view.
 - **Project downloads:** each project page lists deliverables marked "Link to be added". When your files are ready, put them in `assets/downloads/` and replace the status label with a link such as `<a href="../assets/downloads/your-file.xlsx">`.
 
 ## Preview locally

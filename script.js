@@ -83,6 +83,26 @@ const SITE = {
     if (steps) steps.classList.add("is-visible");
   }
 
+  /* ---------- Hero background video (loops silently; image is the fallback) ---------- */
+  var heroVideo = $(".hero__video");
+  if (heroVideo) {
+    if (reduceMotion) {
+      heroVideo.pause();
+      heroVideo.removeAttribute("autoplay");
+    } else {
+      heroVideo.muted = true;
+      heroVideo.addEventListener("playing", function () { heroVideo.classList.add("is-playing"); });
+      var tryPlay = function () { var p = heroVideo.play(); if (p && p.catch) p.catch(function () {}); };
+      tryPlay();
+      /* Save battery and data: pause when the hero is off screen */
+      if ("IntersectionObserver" in window) {
+        new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) { if (e.isIntersecting) tryPlay(); else heroVideo.pause(); });
+        }, { threshold: 0.05 }).observe(heroVideo);
+      }
+    }
+  }
+
   /* ---------- Hero parallax (gentle) ---------- */
   var parallax = $("[data-parallax]");
   if (parallax && !reduceMotion) {
@@ -143,8 +163,12 @@ const SITE = {
     if (label) label.textContent = value;
   }
   fillContact("contact-email", SITE.email, "mailto:" + SITE.email, false);
-  fillContact("contact-linkedin", SITE.linkedin && SITE.linkedin.replace(/^https?:\/\/(www\.)?/i, ""), SITE.linkedin, true);
+  fillContact("contact-linkedin", SITE.linkedin && "View my LinkedIn profile", SITE.linkedin, true);
   fillContact("contact-cv", SITE.cv && "Download my CV", SITE.cv && resolveAsset(SITE.cv), true);
+
+  /* "Contact Me" button: opens an email once SITE.email is set */
+  var cta = document.getElementById("contact-cta");
+  if (cta && SITE.email) cta.setAttribute("href", "mailto:" + SITE.email);
 
   if (SITE.cv) {
     $$("[data-cv-link]").forEach(function (a) {
@@ -152,6 +176,53 @@ const SITE = {
       a.setAttribute("target", "_blank");
       a.setAttribute("rel", "noopener noreferrer");
     });
+  }
+
+  /* ---------- Portrait: appears automatically once assets/images/portrait.png exists ---------- */
+  $$("img[data-photo]").forEach(function (img) {
+    function ok() {
+      img.hidden = false;
+      var box = img.closest(".portrait, .hub");
+      if (box) box.classList.add("has-photo");
+    }
+    if (img.complete && img.naturalWidth > 0) ok();
+    else img.addEventListener("load", ok);
+  });
+
+  /* ---------- Tool icons: fall back to the tool name if an SVG is missing ---------- */
+  function iconFallback(img) {
+    img.hidden = true;
+    var name = img.parentNode && img.parentNode.querySelector(".tool__name");
+    if (name) name.hidden = false;
+  }
+  document.addEventListener("error", function (e) {
+    if (e.target && e.target.classList && e.target.classList.contains("tool__icon")) iconFallback(e.target);
+  }, true);
+  $$(".tool__icon").forEach(function (img) {
+    if (img.complete && img.naturalWidth === 0) iconFallback(img);
+  });
+
+  /* ---------- Count-up for the experience figures ---------- */
+  var counters = $$("[data-count]");
+  function runCount(el) {
+    var end = parseInt(el.getAttribute("data-count"), 10);
+    var start = null;
+    function tick(t) {
+      if (start === null) start = t;
+      var p = Math.min((t - start) / 1200, 1);
+      el.textContent = Math.round(end * (1 - Math.pow(1 - p, 3)));
+      if (p < 1) window.requestAnimationFrame(tick);
+    }
+    el.textContent = "0";
+    window.requestAnimationFrame(tick);
+  }
+  if (counters.length && "IntersectionObserver" in window && !reduceMotion) {
+    var co = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) { runCount(entry.target); co.unobserve(entry.target); }
+      });
+    }, { threshold: 0.6 });
+    counters.forEach(function (el) { co.observe(el); });
   }
 
   /* ---------- Video introduction ---------- */
