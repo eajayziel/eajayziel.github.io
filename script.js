@@ -8,8 +8,8 @@
    Leave a value as "" and the site shows a clearly labelled placeholder.
    -------------------------------------------------------------------------- */
 const SITE = {
-  email: "",      // e.g. "name@example.com"
-  linkedin: "",   // e.g. "https://www.linkedin.com/in/your-profile"
+  email: "",      // e.g. "eajayziel@gmail.com"
+  linkedin: "",   // e.g. "linkedin.com/in/jayziel-lagumbay"
   cv: "",         // e.g. "assets/cv.pdf" (path relative to the site root) or a full https:// URL
   videoUrl: ""    // YouTube/Vimeo link, or a path such as "assets/videos/intro.mp4"
 };
