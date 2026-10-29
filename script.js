@@ -8,9 +8,9 @@
    Leave a value as "" and the site shows a clearly labelled placeholder.
    -------------------------------------------------------------------------- */
 const SITE = {
-  email: "",      // e.g. "name@example.com"
-  linkedin: "",   // e.g. "https://www.linkedin.com/in/your-profile"
-  cv: "",         // e.g. "assets/cv.pdf" (path relative to the site root) or a full https:// URL
+  email: "eajayziel@gmail.com",      // e.g. "name@example.com"
+  linkedin: "https://www.linkedin.com/in/jayziel-lagumbay/",   // e.g. "https://www.linkedin.com/in/your-profile"
+  cv: "assets/cv.pdf",         // e.g. "assets/cv.pdf" (path relative to the site root) or a full https:// URL
   videoUrl: ""    // YouTube/Vimeo link, or a path such as "assets/videos/intro.mp4"
 };
 
@@ -163,6 +163,23 @@ const SITE = {
     window.setTimeout(scheduleRepeat, 4000);                   /* first repeat comes well after the intro sequence */
   }
 
+  /* ---------- Hero background video: start reliably, pause when off-screen or if motion is reduced ---------- */
+  var heroVideo = $(".hero__video video");
+  if (heroVideo) {
+    if (reduceMotion) {
+      heroVideo.pause();
+    } else {
+      var kick = heroVideo.play();
+      if (kick && kick.catch) kick.catch(function () {});
+      if ("IntersectionObserver" in window) {
+        new IntersectionObserver(function (e) {
+          if (e[0].isIntersecting) { var p = heroVideo.play(); if (p && p.catch) p.catch(function () {}); }
+          else heroVideo.pause();
+        }).observe(heroVideo);
+      }
+    }
+  }
+
   /* ---------- Hero parallax (gentle) ---------- */
   var parallax = $("[data-parallax]");
   if (parallax && !reduceMotion) {
@@ -255,6 +272,10 @@ const SITE = {
   /* "Contact Me" button: opens an email once SITE.email is set */
   var cta = document.getElementById("contact-cta");
   if (cta && SITE.email) cta.setAttribute("href", "mailto:" + SITE.email);
+
+  /* The contact-list CV link downloads the file; the other CV buttons open it in a new tab */
+  var cvDownload = document.getElementById("contact-cv");
+  if (cvDownload && SITE.cv) cvDownload.setAttribute("download", "Jayziel-Lagumbay-CV.pdf");
 
   if (SITE.cv) {
     $$("[data-cv-link]").forEach(function (a) {
