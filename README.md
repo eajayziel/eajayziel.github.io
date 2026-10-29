@@ -12,7 +12,8 @@ executive-assistant-portfolio/
 ├── .nojekyll                       Tells GitHub Pages to serve files as is
 ├── assets/
 │   ├── images/hero-bg.svg          Hero background (replaceable)
-│   ├── images/portrait.png         Your transparent portrait (add this)
+│   ├── images/portrait-hero.png    Hero photo (included)
+│   ├── images/portrait-circle.png  About-circle photo (included)
 │   ├── icons/favicon.svg
 │   ├── icons/tools/                Your monochrome tool icons (add these)
 │   └── videos/                     Put your intro video here if self-hosting
@@ -45,9 +46,14 @@ const SITE = {
 
 While a setting is empty, the site shows a clearly labelled placeholder instead of a broken link. The "View My CV" buttons scroll to the Contact section until `cv` is set.
 
-## Portrait (transparent PNG)
+## Portraits (transparent PNGs)
 
-Save your cut-out photo (no background) as **`assets/images/portrait.png`**. That is all you need to do. It shows up automatically in two places: the hero, and the circle in "Experience at a Glance". Until the file exists, a placeholder is shown. A tall image (about 4:5) works best.
+Two photos are used, both already optimized and included in this update:
+
+- `assets/images/portrait-hero.png`: the white-outfit photo in the hero.
+- `assets/images/portrait-circle.png`: the blue-blazer photo in the "Experience at a Glance" circle.
+
+To swap either one later, upload a new transparent PNG with the same file name. Until a file exists, a placeholder is shown.
 
 ## Tool icons (your monochrome SVGs)
 
