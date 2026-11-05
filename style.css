@@ -1,6 +1,6 @@
 /* ==========================================================================
    Executive Assistant Portfolio — style.css
-   Sections: tokens · base · layout · buttons · nav · hero · video · tools ·
+   Sections: tokens · base · layout · buttons · nav · hero · tools ·
              problems · process · projects · about · contact · footer ·
              project pages · motion · responsive
    ========================================================================== */
@@ -585,80 +585,6 @@ h1, h2, h3 {
   5%   { opacity: 1; }
   to   { stroke-dashoffset: 0; opacity: 1; }
 }
-
-/* ---------- Video ---------- */
-.video-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
-  gap: clamp(2rem, 5vw, 4.5rem);
-  align-items: center;
-}
-.video-layout .section-head { margin-bottom: 0; }
-
-.video-frame {
-  position: relative;
-  aspect-ratio: 16 / 9;
-  border-radius: var(--radius);
-  overflow: hidden;
-  background: var(--navy);
-  box-shadow: 0 30px 60px -30px rgba(6, 26, 43, 0.5);
-  border: 1px solid var(--line);
-}
-.video-frame__thumb {
-  position: absolute;
-  inset: 0;
-  background:
-    url("assets/images/hero-bg.svg") center / cover no-repeat;
-}
-.video-frame__thumb::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(6, 26, 43, 0.15), rgba(6, 26, 43, 0.65));
-}
-.video-frame__play {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  border: 0;
-  background: transparent;
-  cursor: pointer;
-  display: grid;
-  place-items: center;
-  color: var(--white);
-  z-index: 2;
-}
-.play-badge {
-  display: grid;
-  place-items: center;
-  width: 84px; height: 84px;
-  border-radius: 50%;
-  background: rgba(72, 196, 199, 0.95);
-  color: var(--navy);
-  transition: transform 0.35s var(--ease), background-color 0.3s;
-}
-.play-badge svg { width: 28px; height: 28px; margin-left: 4px; }
-.video-frame__play:hover .play-badge { transform: scale(1.07); background: #6fd6d8; }
-.video-frame__caption {
-  position: absolute;
-  left: 1.25rem; bottom: 1rem;
-  z-index: 2;
-  font-size: 0.85rem;
-  color: var(--on-dark);
-}
-.video-frame__status {
-  position: absolute;
-  inset: auto 1rem 1rem 1rem;
-  z-index: 3;
-  padding: 0.8rem 1rem;
-  border-radius: 10px;
-  background: rgba(6, 26, 43, 0.92);
-  color: var(--white);
-  font-size: 0.9rem;
-  border: 1px solid rgba(72, 196, 199, 0.4);
-}
-.video-frame iframe,
-.video-frame video { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; z-index: 4; background: #000; }
 
 /* ---------- Tools marquee ---------- */
 .tools { padding-block: clamp(3.5rem, 6vw, 5.5rem); border-block: 1px solid var(--line); }
@@ -1418,7 +1344,6 @@ a.contact__item:hover .go { transform: translate(3px, -3px); color: var(--teal);
   .hero__main { grid-template-columns: 1fr; padding-top: 1.75rem; gap: 2.25rem; }
   .hero__stage { justify-self: center; width: min(100%, 460px); margin-bottom: 0; }
 
-  .video-layout,
   .about,
   .contact__grid { grid-template-columns: 1fr; }
 
@@ -1435,7 +1360,6 @@ a.contact__item:hover .go { transform: translate(3px, -3px); color: var(--teal);
   .footer__nav { justify-content: flex-start; gap: 0.5rem 1.6rem; }
   .footer__roles { gap: 0.25rem 1.25rem; }
   .footer__roles li + li::before { display: none; }
-  .play-badge { width: 68px; height: 68px; }
   .marquee__track { animation-duration: 55s; }
 
   .fx { grid-template-columns: 1fr; justify-items: center; gap: 0.9rem; }
@@ -1471,3 +1395,57 @@ a.contact__item:hover .go { transform: translate(3px, -3px); color: var(--teal);
   .script__word { -webkit-mask-image: none; mask-image: none; }
   .tools__toggle { display: none; }
 }
+
+
+/* ---------- Workflow screenshots + walkthrough player ---------- */
+.preview .shot {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  transition: transform 0.6s var(--ease);
+}
+.project:hover .preview .shot { transform: scale(1.03); }
+.preview.has-shot { padding: 0; background: var(--navy); }
+.preview.has-shot::before { display: none; }
+.preview.has-shot .mock,
+.preview.has-shot .preview__tag { display: none; }
+.preview.has-shot::after {            /* soft shade so the play icon stays visible on any screenshot */
+  content: "";
+  position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(180deg, rgba(6, 26, 43, 0) 55%, rgba(6, 26, 43, 0.35));
+  pointer-events: none;
+}
+button.demo-badge { border: 0; padding: 0; cursor: pointer; font: inherit; }
+.demo-badge:focus-visible { outline: 3px solid var(--white); outline-offset: 3px; }
+
+.demo-modal {
+  width: min(960px, 94vw);
+  padding: 0;
+  border: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--navy);
+  color: var(--white);
+  box-shadow: 0 40px 90px -20px rgba(0, 0, 0, 0.7);
+}
+.demo-modal::backdrop { background: rgba(6, 26, 43, 0.82); backdrop-filter: blur(3px); }
+.demo-modal__bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.75rem 1rem 0.75rem 1.25rem; }
+.demo-modal__title { font-family: var(--font-display); font-size: 1.15rem; }
+.demo-modal__close {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: transparent;
+  color: var(--white);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.demo-modal__close:hover { background: rgba(255, 255, 255, 0.12); }
+.demo-modal__stage { position: relative; aspect-ratio: 16 / 9; background: #000; }
+.demo-modal__stage iframe,
+.demo-modal__stage video { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }

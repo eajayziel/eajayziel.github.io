@@ -11,7 +11,14 @@ const SITE = {
   email: "eajayziel@gmail.com",      // e.g. "name@example.com"
   linkedin: "https://www.linkedin.com/in/jayziel-lagumbay/",   // e.g. "https://www.linkedin.com/in/your-profile"
   cv: "assets/cv.pdf",         // e.g. "assets/cv.pdf" (path relative to the site root) or a full https:// URL
-  videoUrl: ""    // YouTube/Vimeo link, or a path such as "assets/videos/intro.mp4"
+  /* Walkthrough video for each card in "Workflows in Action".
+     Leave "" to hide that card's "Watch demo" button. Accepts a YouTube, Vimeo or Google Drive
+     share link, or a file path such as "assets/walkthroughs/command-center.mp4". */
+  demos: {
+    "executive-command-center": "",
+    "meeting-to-action-system": "",
+    "client-onboarding-sop": ""
+  }
 };
 
 (function () {
@@ -380,45 +387,74 @@ const SITE = {
     counters.forEach(function (el) { co.observe(el); });
   }
 
-  /* ---------- Video introduction ---------- */
-  var frame = $("#video-frame");
-  var playBtn = $("#video-play");
-  var status = $("#video-status");
+  /* ---------- Workflow screenshots: replace the drawn preview once the image file exists ---------- */
+  $$("img[data-shot]").forEach(function (img) {
+    function ok() { img.hidden = false; var box = img.closest(".preview"); if (box) box.classList.add("has-shot"); }
+    if (img.complete && img.naturalWidth > 0) ok();
+    else img.addEventListener("load", ok);
+  });
 
+  /* ---------- Workflow walkthroughs: opens a player when a link is set in SITE.demos ---------- */
   function toEmbedUrl(url) {
     var yt = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([\w-]{6,})/i);
     if (yt) return "https://www.youtube-nocookie.com/embed/" + yt[1] + "?autoplay=1&rel=0";
     var vm = url.match(/vimeo\.com\/(?:video\/)?(\d+)/i);
     if (vm) return "https://player.vimeo.com/video/" + vm[1] + "?autoplay=1";
+    var gd = url.match(/drive\.google\.com\/(?:file\/d\/|open\?id=)([\w-]+)/i);
+    if (gd) return "https://drive.google.com/file/d/" + gd[1] + "/preview";
     return null;
   }
 
-  if (frame && playBtn) {
-    playBtn.addEventListener("click", function () {
-      if (!SITE.videoUrl) {
-        if (status) { status.hidden = false; }
-        return;
-      }
-      var embed = toEmbedUrl(SITE.videoUrl);
-      var node;
-      if (embed) {
-        node = document.createElement("iframe");
-        node.src = embed;
-        node.title = "Introduction video";
-        node.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
-        node.allowFullscreen = true;
-      } else {
-        node = document.createElement("video");
-        node.src = resolveAsset(SITE.videoUrl);
-        node.controls = true;
-        node.autoplay = true;
-        node.setAttribute("aria-label", "Introduction video");
-      }
-      frame.appendChild(node);
-      playBtn.hidden = true;
-      var caption = $(".video-frame__caption", frame);
-      if (caption) caption.hidden = true;
-      node.focus();
-    });
+  var demoDialog = null;
+  function getDemoDialog() {
+    if (demoDialog) return demoDialog;
+    demoDialog = document.createElement("dialog");
+    demoDialog.className = "demo-modal";
+    demoDialog.setAttribute("aria-label", "Project walkthrough");
+    demoDialog.innerHTML =
+      '<div class="demo-modal__bar"><p class="demo-modal__title"></p>' +
+      '<button type="button" class="demo-modal__close" aria-label="Close walkthrough">&times;</button></div>' +
+      '<div class="demo-modal__stage"></div>';
+    document.body.appendChild(demoDialog);
+    demoDialog.querySelector(".demo-modal__close").addEventListener("click", function () { demoDialog.close(); });
+    demoDialog.addEventListener("click", function (e) { if (e.target === demoDialog) demoDialog.close(); });
+    demoDialog.addEventListener("close", function () { demoDialog.querySelector(".demo-modal__stage").innerHTML = ""; });
+    return demoDialog;
   }
+
+  function openDemo(url, title) {
+    var dlg = getDemoDialog();
+    if (typeof dlg.showModal !== "function") { window.open(resolveAsset(url), "_blank", "noopener"); return; }
+    var stage = dlg.querySelector(".demo-modal__stage");
+    stage.innerHTML = "";
+    dlg.querySelector(".demo-modal__title").textContent = title || "Walkthrough";
+    var embed = toEmbedUrl(url), node;
+    if (embed) {
+      node = document.createElement("iframe");
+      node.src = embed;
+      node.title = title || "Walkthrough";
+      node.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
+      node.allowFullscreen = true;
+    } else {
+      node = document.createElement("video");
+      node.src = resolveAsset(url);
+      node.controls = true;
+      node.autoplay = true;
+      node.playsInline = true;
+      node.setAttribute("aria-label", title || "Walkthrough");
+    }
+    stage.appendChild(node);
+    dlg.showModal();
+  }
+
+  var demoLinks = SITE.demos || {};
+  $$("[data-demo]").forEach(function (el) {
+    var url = demoLinks[el.getAttribute("data-demo")];
+    if (!url) return;                       /* no walkthrough yet: the button and play icon stay hidden */
+    el.hidden = false;
+    el.addEventListener("click", function (e) {
+      e.preventDefault();
+      openDemo(url, el.getAttribute("data-title"));
+    });
+  });
 })();

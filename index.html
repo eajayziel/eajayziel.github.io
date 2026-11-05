@@ -145,28 +145,6 @@
       </div>
     </section>
 
-    <!-- C. Video Introduction -->
-    <section class="section" id="intro" aria-labelledby="intro-title">
-      <div class="wrap video-layout">
-        <div class="section-head reveal">
-          <h2 id="intro-title">A Quick Introduction</h2>
-          <p>A short walkthrough of how I work, what I support, and how I keep priorities, meetings and documentation moving.</p>
-        </div>
-        <div class="reveal" style="--d:.1s">
-          <div class="video-frame" id="video-frame" role="region" aria-label="Introduction video">
-            <div class="video-frame__thumb" aria-hidden="true"></div>
-            <button class="video-frame__play" type="button" id="video-play" aria-label="Play introduction video">
-              <span class="play-badge">
-                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12.5-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5Z"/></svg>
-              </span>
-            </button>
-            <span class="video-frame__caption">Introduction video · placeholder</span>
-            <p class="video-frame__status" id="video-status" role="status" hidden>My introduction video is coming soon. Add the video URL in <code>script.js</code> to activate this player.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <!-- D. Tools & Technology -->
     <section class="tools" aria-labelledby="tools-title">
       <div class="wrap">
@@ -316,9 +294,10 @@
         <div class="projects">
           <!-- Project 01 -->
           <article class="project reveal">
-            <div class="preview" aria-hidden="true">
-              <span class="preview__num">01</span>
-              <div class="mock">
+            <div class="preview">
+              <span class="preview__num" aria-hidden="true">01</span>
+              <img class="shot" src="assets/workflows/executive-command-center.png" alt="Screenshot of the Executive Weekly Command Center workbook" data-shot hidden>
+              <div class="mock" aria-hidden="true">
                 <p class="mock__title">Executive Command Center</p>
                 <div class="mock__tiles">
                   <span><i>Total Tasks</i><b style="width:70%"></b></span>
@@ -332,8 +311,8 @@
                   <div class="mock__row"><em></em><b style="width:36%"></b><u class="p-pend">Pending</u></div>
                 </div>
               </div>
-              <span class="demo-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z"/></svg></span>
-              <span class="preview__tag">Illustrative preview</span>
+              <button class="demo-badge" type="button" data-demo="executive-command-center" data-title="Executive Weekly Command Center" aria-label="Play walkthrough: Executive Weekly Command Center" hidden><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z"/></svg></button>
+              <span class="preview__tag" aria-hidden="true">Illustrative preview</span>
             </div>
             <div class="project__body">
               <p class="project__num">01 · Executive Support</p>
@@ -347,7 +326,7 @@
               </p>
               <p class="project__meta"><span><strong>Deliverable:</strong> Excel workbook and case study</span></p>
               <div class="project__actions">
-                <a class="btn btn--primary btn--sm demo-btn" href="projects/executive-command-center.html"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z"/></svg>Watch demo</a>
+                <a class="btn btn--primary btn--sm demo-btn" href="projects/executive-command-center.html" data-demo="executive-command-center" data-title="Executive Weekly Command Center" hidden><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z"/></svg>Watch demo</a>
                 <a class="project__link" href="projects/executive-command-center.html">View project <span class="arrow" aria-hidden="true">→</span><span class="visually-hidden">: Executive Weekly Command Center</span></a>
               </div>
             </div>
@@ -355,9 +334,10 @@
 
           <!-- Project 02 -->
           <article class="project reveal" style="--d:.1s">
-            <div class="preview" aria-hidden="true">
-              <span class="preview__num">02</span>
-              <div class="mock">
+            <div class="preview">
+              <span class="preview__num" aria-hidden="true">02</span>
+              <img class="shot" src="assets/workflows/meeting-to-action-system.png" alt="Screenshot of the Meeting-to-Action tracker" data-shot hidden>
+              <div class="mock" aria-hidden="true">
                 <p class="mock__title">Meeting Notes <small>Action Items</small></p>
                 <div class="mock__split">
                   <div class="mock__notes"><b style="width:90%"></b><b style="width:70%"></b><b style="width:82%"></b><b style="width:55%"></b></div>
@@ -369,8 +349,8 @@
                   </div>
                 </div>
               </div>
-              <span class="demo-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z"/></svg></span>
-              <span class="preview__tag">Illustrative preview</span>
+              <button class="demo-badge" type="button" data-demo="meeting-to-action-system" data-title="Meeting-to-Action System" aria-label="Play walkthrough: Meeting-to-Action System" hidden><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z"/></svg></button>
+              <span class="preview__tag" aria-hidden="true">Illustrative preview</span>
             </div>
             <div class="project__body">
               <p class="project__num">02 · Meeting Support</p>
@@ -384,7 +364,7 @@
               </p>
               <p class="project__meta"><span><strong>Deliverable:</strong> Meeting notes, Excel tracker, and case study</span></p>
               <div class="project__actions">
-                <a class="btn btn--primary btn--sm demo-btn" href="projects/meeting-to-action-system.html"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z"/></svg>Watch demo</a>
+                <a class="btn btn--primary btn--sm demo-btn" href="projects/meeting-to-action-system.html" data-demo="meeting-to-action-system" data-title="Meeting-to-Action System" hidden><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z"/></svg>Watch demo</a>
                 <a class="project__link" href="projects/meeting-to-action-system.html">View project <span class="arrow" aria-hidden="true">→</span><span class="visually-hidden">: Meeting-to-Action System</span></a>
               </div>
             </div>
@@ -392,9 +372,10 @@
 
           <!-- Project 03 -->
           <article class="project reveal" style="--d:.2s">
-            <div class="preview" aria-hidden="true">
-              <span class="preview__num">03</span>
-              <div class="mock">
+            <div class="preview">
+              <span class="preview__num" aria-hidden="true">03</span>
+              <img class="shot" src="assets/workflows/client-onboarding-sop.png" alt="Screenshot of the Client Onboarding SOP and checklist" data-shot hidden>
+              <div class="mock" aria-hidden="true">
                 <p class="mock__title">Client Onboarding</p>
                 <div class="mock__steps"><span class="on"><i></i>Welcome</span><span class="on"><i></i>Collect Info</span><span><i></i>Access</span><span><i></i>Review</span></div>
                 <div class="mock__rows">
@@ -403,8 +384,8 @@
                   <div class="mock__row"><em></em><b style="width:56%"></b><u class="p-pend">Pending</u></div>
                 </div>
               </div>
-              <span class="demo-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z"/></svg></span>
-              <span class="preview__tag">Illustrative preview</span>
+              <button class="demo-badge" type="button" data-demo="client-onboarding-sop" data-title="Client Onboarding SOP and Checklist" aria-label="Play walkthrough: Client Onboarding SOP and Checklist" hidden><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z"/></svg></button>
+              <span class="preview__tag" aria-hidden="true">Illustrative preview</span>
             </div>
             <div class="project__body">
               <p class="project__num">03 · Client Support</p>
@@ -418,7 +399,7 @@
               </p>
               <p class="project__meta"><span><strong>Deliverable:</strong> SOP document, checklist, and case study</span></p>
               <div class="project__actions">
-                <a class="btn btn--primary btn--sm demo-btn" href="projects/client-onboarding-sop.html"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z"/></svg>Watch demo</a>
+                <a class="btn btn--primary btn--sm demo-btn" href="projects/client-onboarding-sop.html" data-demo="client-onboarding-sop" data-title="Client Onboarding SOP and Checklist" hidden><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z"/></svg>Watch demo</a>
                 <a class="project__link" href="projects/client-onboarding-sop.html">View project <span class="arrow" aria-hidden="true">→</span><span class="visually-hidden">: Client Onboarding SOP and Checklist</span></a>
               </div>
             </div>

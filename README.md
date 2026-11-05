@@ -16,7 +16,8 @@ executive-assistant-portfolio/
 │   ├── images/portrait-circle.png  About-circle photo (included)
 │   ├── icons/favicon.svg
 │   ├── icons/tools/                Your monochrome tool icons (add these)
-│   └── videos/                     Put your intro video here if self-hosting
+│   ├── workflows/                  Screenshots for the Workflows cards (see below)
+│   └── walkthroughs/               Optional: self-hosted walkthrough videos
 ├── projects/
 │   ├── executive-command-center.html
 │   ├── meeting-to-action-system.html
@@ -33,7 +34,7 @@ const SITE = {
   email: "",
   linkedin: "",
   cv: "",
-  videoUrl: ""
+  demos: { ... }
 };
 ```
 
@@ -42,7 +43,7 @@ const SITE = {
 | `email`    | Your email address. Creates a `mailto:` link.                                                  |
 | `linkedin` | Full profile URL, e.g. `https://www.linkedin.com/in/your-profile`                              |
 | `cv`       | A file path such as `assets/cv.pdf` (save the PDF there), or a full `https://` link            |
-| `videoUrl` | A YouTube or Vimeo link, or a self-hosted file such as `assets/videos/intro.mp4`               |
+| `demos` | Walkthrough link for each Workflows card (see "Workflows in Action" below). |
 
 While a setting is empty, the site shows a clearly labelled placeholder instead of a broken link. The "View My CV" buttons scroll to the Contact section until `cv` is set.
 
@@ -65,9 +66,27 @@ Sources: Simple Icons (CC0) for most brands, plus Font Awesome (CC BY 4.0), Devi
 
 Icons display at 30px tall in the scrolling strip and 22px on the project cards. The "Show all tools" button lists every tool by category with its name, so nothing is cut off. Visitors who prefer reduced motion see this view automatically.
 
-## "Watch demo" buttons
+## Workflows in Action: screenshots and walkthroughs
 
-Until your demo videos exist, the buttons open each project page. When a video is ready, tell me (or point the button's `href` at the video) and add its length to the label, for example "Watch 38 sec demo".
+**Screenshots.** Save one image per card in `assets/workflows/` with exactly these names (PNG, JPG is not picked up):
+
+- `executive-command-center.png`
+- `meeting-to-action-system.png`
+- `client-onboarding-sop.png`
+
+Use a landscape screenshot, about 1600×1050 px (16:10), under 500 KB each. When a file exists it replaces the drawn preview on that card automatically. Until then, the drawn "Illustrative preview" is shown. Blur or crop out anything private (real names, emails, client data).
+
+**Walkthrough videos.** Open `script.js` and paste a link into `demos`:
+
+```js
+demos: {
+  "executive-command-center": "https://youtu.be/XXXXXXXXXXX",
+  "meeting-to-action-system": "https://drive.google.com/file/d/FILE_ID/view",
+  "client-onboarding-sop": "assets/walkthroughs/client-onboarding.mp4"
+}
+```
+
+Accepted: a YouTube link (best: set it to Unlisted), a Vimeo link, a Google Drive share link (the file must be shared as "Anyone with the link can view"), or a video file in `assets/walkthroughs/`. While a link is empty, that card's "Watch demo" button and play icon stay hidden, so nothing points to a missing video. When it is set, the button and the play icon open the video in a pop-up player.
 
 ## Other things to replace
 
