@@ -16,7 +16,7 @@ executive-assistant-portfolio/
 │   ├── images/portrait-circle.png  About-circle photo (included)
 │   ├── icons/favicon.svg
 │   ├── icons/tools/                Your monochrome tool icons (add these)
-│   ├── workflows/                  Screenshots for the Workflows cards (see below)
+│   ├── workflows/                  One folder of screenshots per project (see below)
 │   └── walkthroughs/               Optional: self-hosted walkthrough videos
 ├── projects/
 │   ├── executive-command-center.html
@@ -68,13 +68,31 @@ Icons display at 30px tall in the scrolling strip and 22px on the project cards.
 
 ## Workflows in Action: screenshots and walkthroughs
 
-**Screenshots.** Save one image per card in `assets/workflows/` with exactly these names (PNG, JPG is not picked up):
+**Screenshots.** Each project has its own folder in `assets/workflows/`. Save your screenshots there with these exact names (all lowercase, `.png`; `.jpg`, `.jpeg` and `.webp` also work):
 
-- `executive-command-center.png`
-- `meeting-to-action-system.png`
-- `client-onboarding-sop.png`
+`assets/workflows/executive-command-center/`
+- `01-executive-overview.png`
+- `02-task-tracker.png`
+- `03-guide-and-qa.png`
 
-Use a landscape screenshot, about 1600×1050 px (16:10), under 500 KB each. When a file exists it replaces the drawn preview on that card automatically. Until then, the drawn "Illustrative preview" is shown. Blur or crop out anything private (real names, emails, client data).
+`assets/workflows/meeting-to-action-system/`
+- `01-executive-overview-kpis.png`
+- `02-executive-overview-deadlines.png`
+- `03-action-tracker.png`
+- `04-guide-and-qa-page-1.png`
+- `05-guide-and-qa-page-2.png`
+
+`assets/workflows/client-onboarding-sop/`
+- `01-sop-procedure-steps-1-4.png`
+- `02-sop-procedure-steps-5-6.png`
+- `03-sop-procedure-steps-7-9.png`
+- `04-sop-process-checklist-a-f.png`
+- `05-process-checklist-f.png`
+- `06-case-study-overview.png`
+
+The first screenshot found becomes the card's cover image, and the card shows "View N screenshots". Clicking opens a viewer with arrows, thumbnails, captions and an "Open full size" link. You can upload only some of them: missing files are simply skipped, and until a project has any screenshot, its drawn "Illustrative preview" stays.
+
+To rename a screenshot, change its caption, or add or remove one, edit the `WORKFLOW_SHOTS` list at the top of `script.js`. Each line is `["file-name-without-extension", "Caption shown in the viewer"]`. Tips: landscape or portrait both work, 1600 px wide is plenty, keep each under about 500 KB, and blur or crop out anything private (real names, emails, client data).
 
 **Walkthrough videos.** Open `script.js` and paste a link into `demos`:
 

@@ -21,6 +21,47 @@ const SITE = {
   }
 };
 
+/* --------------------------------------------------------------------------
+   WORKFLOW SCREENSHOTS — one folder per project in assets/workflows/.
+   Each entry is ["file-name-without-extension", "Caption shown in the viewer"].
+   Files can be .png, .jpg, .jpeg or .webp (lowercase names). Missing files are skipped,
+   so you can add them gradually. The first one found becomes the card's cover image.
+   -------------------------------------------------------------------------- */
+const WORKFLOW_SHOTS = {
+  "executive-command-center": {
+    title: "Executive Weekly Command Center",
+    folder: "assets/workflows/executive-command-center/",
+    shots: [
+      ["01-executive-overview", "Executive Overview"],
+      ["02-task-tracker", "Task Tracker"],
+      ["03-guide-and-qa", "Guide and QA"]
+    ]
+  },
+  "meeting-to-action-system": {
+    title: "Meeting-to-Action System",
+    folder: "assets/workflows/meeting-to-action-system/",
+    shots: [
+      ["01-executive-overview-kpis", "Executive Overview: KPIs"],
+      ["02-executive-overview-deadlines", "Executive Overview: Deadlines"],
+      ["03-action-tracker", "Action Tracker"],
+      ["04-guide-and-qa-page-1", "Guide and QA: Page 1"],
+      ["05-guide-and-qa-page-2", "Guide and QA: Page 2"]
+    ]
+  },
+  "client-onboarding-sop": {
+    title: "Client Onboarding SOP & Checklist",
+    folder: "assets/workflows/client-onboarding-sop/",
+    shots: [
+      ["01-sop-procedure-steps-1-4", "SOP Procedure: Steps 1-4"],
+      ["02-sop-procedure-steps-5-6", "SOP Procedure: Steps 5-6"],
+      ["03-sop-procedure-steps-7-9", "SOP Procedure: Steps 7-9"],
+      ["04-sop-process-checklist-a-f", "SOP Process Checklist: A-F"],
+      ["05-process-checklist-f", "Process Checklist: F"],
+      ["06-case-study-overview", "Case Study Overview"]
+    ]
+  }
+};
+
 (function () {
   "use strict";
 
@@ -387,12 +428,136 @@ const SITE = {
     counters.forEach(function (el) { co.observe(el); });
   }
 
-  /* ---------- Workflow screenshots: replace the drawn preview once the image file exists ---------- */
-  $$("img[data-shot]").forEach(function (img) {
-    function ok() { img.hidden = false; var box = img.closest(".preview"); if (box) box.classList.add("has-shot"); }
-    if (img.complete && img.naturalWidth > 0) ok();
-    else img.addEventListener("load", ok);
+  /* ---------- Workflow screenshots: cover image on each card + a viewer with all of them ---------- */
+  var SHOT_EXTS = ["png", "jpg", "jpeg", "webp"];
+  var galleries = {};
+
+  function findImage(base) {                         /* resolves to the first URL that exists, else null */
+    return new Promise(function (resolve) {
+      var i = 0;
+      (function next() {
+        if (i >= SHOT_EXTS.length) return resolve(null);
+        var url = resolveAsset(base + "." + SHOT_EXTS[i++]);
+        var probe = new Image();
+        probe.onload = function () { resolve(url); };
+        probe.onerror = next;
+        probe.src = url;
+      })();
+    });
+  }
+
+  Object.keys(WORKFLOW_SHOTS).forEach(function (key) {
+    var cfg = WORKFLOW_SHOTS[key];
+    Promise.all(cfg.shots.map(function (s) { return findImage(cfg.folder + s[0]); })).then(function (urls) {
+      var list = [];
+      urls.forEach(function (u, n) { if (u) list.push({ url: u, caption: cfg.shots[n][1] }); });
+      if (!list.length) return;                      /* nothing uploaded yet: keep the drawn preview */
+      galleries[key] = { title: cfg.title, items: list };
+      var cover = document.querySelector('[data-cover="' + key + '"]');
+      var box = cover && cover.closest(".preview");
+      if (!cover || !box) return;
+      cover.src = list[0].url;
+      cover.alt = list[0].caption + " (" + cfg.title + ")";
+      cover.hidden = false;
+      box.classList.add("has-shot");
+      var open = box.querySelector(".preview__open");
+      var count = box.querySelector(".preview__count");
+      if (open) open.hidden = false;
+      if (count) {
+        count.textContent = list.length === 1 ? "View screenshot" : "View " + list.length + " screenshots";
+        count.hidden = false;
+      }
+      if (open) open.addEventListener("click", function () { openShots(key, 0); });
+    });
   });
+
+  var shotsDialog = null, shotsState = { key: null, i: 0 };
+  function getShotsDialog() {
+    if (shotsDialog) return shotsDialog;
+    var d = document.createElement("dialog");
+    d.className = "shots-modal";
+    d.setAttribute("aria-label", "Project screenshots");
+    d.innerHTML =
+      '<div class="shots-modal__bar">' +
+        '<div class="shots-modal__heading"><p class="shots-modal__project"></p><p class="shots-modal__caption"></p></div>' +
+        '<span class="shots-modal__count" aria-live="polite"></span>' +
+        '<a class="shots-modal__full" target="_blank" rel="noopener">Open full size</a>' +
+        '<button type="button" class="shots-modal__close" aria-label="Close screenshots">&times;</button>' +
+      '</div>' +
+      '<div class="shots-modal__stage">' +
+        '<button type="button" class="shots-nav shots-nav--prev" aria-label="Previous screenshot">&#8249;</button>' +
+        '<img class="shots-modal__img" alt="">' +
+        '<button type="button" class="shots-nav shots-nav--next" aria-label="Next screenshot">&#8250;</button>' +
+      '</div>' +
+      '<div class="shots-modal__thumbs" role="group" aria-label="Choose a screenshot"></div>';
+    document.body.appendChild(d);
+    d.querySelector(".shots-modal__close").addEventListener("click", function () { d.close(); });
+    d.querySelector(".shots-nav--prev").addEventListener("click", function () { stepShots(-1); });
+    d.querySelector(".shots-nav--next").addEventListener("click", function () { stepShots(1); });
+    d.addEventListener("click", function (e) { if (e.target === d) d.close(); });
+    d.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowLeft") { e.preventDefault(); stepShots(-1); }
+      if (e.key === "ArrowRight") { e.preventDefault(); stepShots(1); }
+    });
+    var x0 = null;                                   /* swipe on touch screens */
+    var stage = d.querySelector(".shots-modal__stage");
+    stage.addEventListener("touchstart", function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+    stage.addEventListener("touchend", function (e) {
+      if (x0 === null) return;
+      var dx = e.changedTouches[0].clientX - x0;
+      if (Math.abs(dx) > 50) stepShots(dx < 0 ? 1 : -1);
+      x0 = null;
+    }, { passive: true });
+    shotsDialog = d;
+    return d;
+  }
+
+  function showShot(i) {
+    var g = galleries[shotsState.key], d = shotsDialog;
+    if (!g || !d) return;
+    var n = g.items.length;
+    shotsState.i = (i + n) % n;
+    var it = g.items[shotsState.i];
+    var img = d.querySelector(".shots-modal__img");
+    img.src = it.url;
+    img.alt = it.caption + " (" + g.title + ")";
+    d.querySelector(".shots-modal__project").textContent = g.title;
+    d.querySelector(".shots-modal__caption").textContent = it.caption;
+    d.querySelector(".shots-modal__count").textContent = (shotsState.i + 1) + " / " + n;
+    d.querySelector(".shots-modal__full").setAttribute("href", it.url);
+    $$(".shots-thumb", d).forEach(function (t, idx) {
+      if (idx === shotsState.i) t.setAttribute("aria-current", "true"); else t.removeAttribute("aria-current");
+    });
+    var next = new Image(); next.src = g.items[(shotsState.i + 1) % n].url;   /* preload the next one */
+  }
+  function stepShots(delta) { showShot(shotsState.i + delta); }
+
+  function openShots(key, start) {
+    var g = galleries[key];
+    if (!g) return;
+    var d = getShotsDialog();
+    if (typeof d.showModal !== "function") { window.open(g.items[start].url, "_blank", "noopener"); return; }
+    shotsState.key = key;
+    var many = g.items.length > 1;
+    d.querySelector(".shots-nav--prev").hidden = !many;
+    d.querySelector(".shots-nav--next").hidden = !many;
+    var thumbs = d.querySelector(".shots-modal__thumbs");
+    thumbs.hidden = !many;
+    thumbs.innerHTML = "";
+    g.items.forEach(function (it, idx) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "shots-thumb";
+      b.setAttribute("aria-label", it.caption);
+      var im = document.createElement("img");
+      im.src = it.url; im.alt = "";
+      b.appendChild(im);
+      b.addEventListener("click", function () { showShot(idx); });
+      thumbs.appendChild(b);
+    });
+    showShot(start);
+    d.showModal();
+  }
 
   /* ---------- Workflow walkthroughs: opens a player when a link is set in SITE.demos ---------- */
   function toEmbedUrl(url) {
