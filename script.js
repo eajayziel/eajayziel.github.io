@@ -15,9 +15,9 @@ const SITE = {
      Leave "" to hide that card's "Watch demo" button. Accepts a YouTube, Vimeo or Google Drive
      share link, or a file path such as "assets/walkthroughs/command-center.mp4". */
   demos: {
-    "executive-command-center": "https://drive.google.com/file/d/12zWb1XUpaSUlr5RmZzN1hz9kBr5SWbIz/view?usp=sharing",
-    "meeting-to-action-system": "https://drive.google.com/file/d/1_Mh45hrJQvlT7ZgnWNH5vlkxrraVu0yR/view?usp=sharing",
-    "client-onboarding-sop": "https://drive.google.com/file/d/16LVdQdiBU0iYDXAkYznmZ3HgoLUdEp_9/view?usp=sharing"
+    "executive-command-center": "https://drive.google.com/file/d/1j_lQuaeAhTYsRdW72NH3Nbsf_TWVuZBL/view?usp=sharing",
+    "meeting-to-action-system": "https://drive.google.com/file/d/1I3XNrgf44nh_UOr__dlf5E4LznPUHVvC/view?usp=sharing",
+    "client-onboarding-sop": "https://drive.google.com/file/d/1BYZckznWUZaVdRZAoDdQoQrltL3w4svH/view?usp=sharing"
   }
 };
 
