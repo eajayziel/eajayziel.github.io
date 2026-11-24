@@ -7,6 +7,29 @@
    SITE SETTINGS — edit these when you have the real details.
    Leave a value as "" and the site shows a clearly labelled placeholder.
    -------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------------
+   DELIVERABLE LINKS — the "Link to be added" buttons on each project page.
+   Paste your Google Drive / OneDrive / Notion / PDF link between the quotes.
+   Upload each file to the path shown. Until a file exists, its button keeps showing "Link to be added".
+   You can also use a full https:// link (Google Drive etc.) instead of a path.
+     workbook  = the Excel workbook (or the main file for that project)
+     caseStudy = the case study write-up
+   -------------------------------------------------------------------------- */
+const DELIVERABLES = {
+  "executive-command-center": {
+    workbook:  "assets/deliverables/executive-command-center/executive-command-center.xlsx",
+    caseStudy: "assets/deliverables/executive-command-center/case-study.pdf"
+  },
+  "meeting-to-action-system": {
+    workbook:  "assets/deliverables/meeting-to-action-system/meeting-to-action-system.xlsx",
+    caseStudy: "assets/deliverables/meeting-to-action-system/case-study.pdf"
+  },
+  "client-onboarding-sop": {
+    workbook:  "assets/deliverables/client-onboarding-sop/client-onboarding-sop.pdf",
+    caseStudy: "assets/deliverables/client-onboarding-sop/case-study.pdf"
+  }
+};
+
 const SITE = {
   email: "jayziellagumbay@gmail.com",      // e.g. "name@example.com"
   linkedin: "https://www.linkedin.com/in/jayziel-lagumbay/",   // e.g. "https://www.linkedin.com/in/your-profile"
@@ -622,4 +645,40 @@ const WORKFLOW_SHOTS = {
       openDemo(url, el.getAttribute("data-title"));
     });
   });
+  /* ---------- Project pages: turn "Link to be added" into real links ---------- */
+  (function fillDeliverables() {
+    var slug = null;
+    Object.keys(DELIVERABLES).forEach(function (k) {
+      if (window.location.pathname.indexOf(k) !== -1) slug = k;
+    });
+    if (!slug) return;
+    var conf = DELIVERABLES[slug];
+    $$("a, span, button, div, p").forEach(function (el) {
+      if (el.children.length || el.textContent.trim().toLowerCase() !== "link to be added") return;
+      var card = el.parentElement, kind = null;
+      for (var i = 0; card && i < 5 && !kind; i++, card = card.parentElement) {
+        var t = card.textContent.toLowerCase();
+        var hasX = /excel|workbook/.test(t), hasC = /case study/.test(t);
+        if (hasX && !hasC) kind = "workbook";
+        else if (hasC && !hasX) kind = "caseStudy";
+      }
+      var url = kind && conf[kind];
+      if (!url) return;                                  /* no link yet: leave the placeholder */
+      var href = resolveAsset(url);
+      var swap = function () {
+        var a = document.createElement("a");
+        a.className = el.className;
+        a.href = href;
+        a.target = "_blank";
+        a.rel = "noopener";
+        a.textContent = kind === "workbook" ? "Open file" : "Read case study";
+        el.replaceWith(a);
+      };
+      /* Local files: only switch the button once the file really exists on the site */
+      if (/^(https?:)?\/\//i.test(url)) { swap(); }
+      else {
+        fetch(href, { method: "HEAD" }).then(function (r) { if (r.ok) swap(); }).catch(function () {});
+      }
+    });
+  })();
 })();

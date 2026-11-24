@@ -1341,8 +1341,18 @@ a.contact__item:hover .go { transform: translate(3px, -3px); color: var(--teal);
   .nav__links a:not(.btn)::after { display: none; }
   .nav__links .btn { margin-top: 1.25rem; }
 
-  .hero__main { grid-template-columns: 1fr; padding-top: 1.75rem; gap: 2.25rem; }
-  .hero__stage { justify-self: center; width: min(100%, 460px); margin-bottom: 0; }
+  /* Phone/tablet hero: stop the full-screen stretch that left a big empty gap above the headline */
+  .hero { min-height: auto; }
+  .hero__main {
+    flex: none;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    align-items: start;
+    align-content: start;
+    padding-top: 2.5rem;
+    gap: 1.5rem;
+  }
+  .hero__stage { justify-self: center; align-self: start; width: min(100%, 420px); margin-bottom: 0; }
 
   .about,
   .contact__grid { grid-template-columns: 1fr; }
