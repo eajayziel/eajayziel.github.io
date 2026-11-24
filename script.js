@@ -8,7 +8,7 @@
    Leave a value as "" and the site shows a clearly labelled placeholder.
    -------------------------------------------------------------------------- */
 const SITE = {
-  email: "eajayziel@gmail.com",      // e.g. "name@example.com"
+  email: "jayziellagumbay@gmail.com",      // e.g. "name@example.com"
   linkedin: "https://www.linkedin.com/in/jayziel-lagumbay/",   // e.g. "https://www.linkedin.com/in/your-profile"
   cv: "assets/cv.pdf",         // e.g. "assets/cv.pdf" (path relative to the site root) or a full https:// URL
   /* Walkthrough video for each card in "Workflows in Action".
